@@ -1,0 +1,39 @@
+# --- Project-specific ---
+EventBooking_PROJECT_BRIEF.md
+.claude
+
+# --- Build results ---
+[Bb]in/
+[Oo]bj/
+
+# --- Visual Studio ---
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# --- Rider / VS Code ---
+.idea/
+.vscode/
+
+# --- NuGet ---
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# --- Local secrets / environment ---
+*.env
+.env.*
+appsettings.Local.json
+appsettings.*.local.json
+secrets.json
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
