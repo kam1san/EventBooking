@@ -1,5 +1,7 @@
 using API.Middleware;
+using Application.Common.Behaviors;
 using Application.Interfaces;
+using FluentValidation;
 using Infrastructure.DataAccess;
 using Infrastructure.Identity;
 using Infrastructure.Repositories;
@@ -14,7 +16,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.Events.Commands.CreateEvent.CreateEventCommand).Assembly));
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(Application.Events.Commands.CreateEvent.CreateEventCommand).Assembly);
+    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
+
+builder.Services.AddValidatorsFromAssembly(typeof(Application.Events.Commands.CreateEvent.CreateEventCommand).Assembly);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

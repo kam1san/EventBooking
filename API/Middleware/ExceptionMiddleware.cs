@@ -1,4 +1,5 @@
 ﻿using Domain.Exceptions;
+using FluentValidation;
 using System.Net;
 using System.Text.Json;
 
@@ -30,6 +31,25 @@ namespace API.Middleware
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            context.Response.ContentType = "application/json";
+
+            if (exception is ValidationException validationException)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                var response = JsonSerializer.Serialize(new
+                {
+                    status = (int)HttpStatusCode.BadRequest,
+                    errors = validationException.Errors.Select(e => new
+                    {
+                        field = e.PropertyName,
+                        message = e.ErrorMessage
+                    })
+                });
+
+                return context.Response.WriteAsync(response);
+            }
+
             var (statusCode, message) = exception switch
             {
                 NotFoundException ex => (HttpStatusCode.NotFound, ex.Message),
@@ -37,16 +57,15 @@ namespace API.Middleware
                 _ => (HttpStatusCode.InternalServerError, "An unexpected error occurred.")
             };
 
-            context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;
 
-            var response = JsonSerializer.Serialize(new
+            var errorResponse = JsonSerializer.Serialize(new
             {
                 status = (int)statusCode,
                 error = message
             });
 
-            return context.Response.WriteAsync(response);
+            return context.Response.WriteAsync(errorResponse);
         }
     }
 }
