@@ -1,8 +1,10 @@
+using System.Security.Claims;
 using Application.Events.Commands.BookSeats;
 using Application.Events.Commands.CreateEvent;
 using Application.Events.Queries.GetAllEvents;
 using Application.Events.Queries.GetEventById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -32,6 +34,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
         {
@@ -45,12 +48,12 @@ namespace API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = eventId }, new { id = eventId });
         }
 
-        [HttpPost("{id}/book")]
-        public async Task<IActionResult> Book(Guid id, [FromBody] BookSeatsRequest request)
+        [Authorize]
+        [HttpPost("{idEvent}/book")]
+        public async Task<IActionResult> Book(Guid idEvent, [FromBody] BookSeatsRequest request)
         {
-            var userId = "demo-user";
-
-            var bookingId = await mediator.Send(new BookSeatsCommand(id, userId, request.Seats));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var bookingId = await mediator.Send(new BookSeatsCommand(idEvent, userId, request.Seats));
             return Ok(new { bookingId });
         }
     }
