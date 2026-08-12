@@ -1,5 +1,6 @@
 using Application.Events.Commands.BookSeats;
 using Application.Events.Commands.CreateEvent;
+using Application.Events.Queries.GetAllEvents;
 using Application.Events.Queries.GetEventById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,13 @@ namespace API.Controllers
         public EventController(IMediator mediator)
         { 
             this.mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await mediator.Send(new GetAllEventsQuery());
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

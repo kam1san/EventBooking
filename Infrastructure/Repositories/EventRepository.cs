@@ -1,27 +1,24 @@
-﻿
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.DataAccess;
+using Infrastructure.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class EventRepository : IEventRepository
+    public class EventRepository : BaseRepository<Event>, IEventRepository
     {
-        private readonly AppDbContext context;
-
-        public EventRepository(AppDbContext context)
+        public EventRepository(AppDbContext context) : base(context)
         {
-            this.context = context;
         }
 
-        public async Task<Event?> GetById(Guid id) => 
+        public override async Task<List<Event>> GetAllAsync() =>
+            await context.Events.Include(x => x.Bookings).ToListAsync();
+
+        public override async Task<Event?> GetByIdAsync(Guid id) =>
             await context.Events.Include(x => x.Bookings).FirstOrDefaultAsync(x => x.Id == id);
-        public async Task Add(Event ev) =>
-            await context.Events.AddAsync(ev);
-        public async Task AddBooking(Booking booking) =>
+
+        public async Task AddBookingAsync(Booking booking) =>
             await context.Bookings.AddAsync(booking);
-        public async Task SaveChanges() =>
-            await context.SaveChangesAsync();
     }
 }

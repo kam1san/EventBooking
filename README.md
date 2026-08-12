@@ -22,13 +22,24 @@ Clean Architecture, 4 layers, dependencies point inward — toward Domain:
 - Clean Architecture + DDD + CQRS (MediatR)
 - Optimistic concurrency (`RowVersion`)
 - Global error handling
+- Request validation — FluentValidation as a MediatR pipeline behavior, structured per-field error responses
+- Generic base repository (`IBaseRepository<T>` / `BaseRepository<T>`)
+
+## Roadmap
+
+- [ ] JWT Authentication
+- [ ] Docker Compose
+- [ ] RabbitMQ
+- [ ] Tests (unit + integration)
+- [ ] CI/CD (GitHub Actions)
 
 ## API
 
 | Method | Route | Description |
 |---|---|---|
-| `POST` | `/Event` | Create an event |
+| `GET` | `/Event` | List all events |
 | `GET` | `/Event/{id}` | Get an event |
+| `POST` | `/Event` | Create an event |
 | `POST` | `/Event/{id}/book` | Book seats |
 
 ## Running locally
