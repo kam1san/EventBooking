@@ -16,8 +16,8 @@ namespace Application.Events.Commands.CreateEvent
         public async Task<Guid> Handle(CreateEventCommand request, CancellationToken cancellationToken)
         {
             var ev = new Event(request.title, request.description, request.date, request.totalSeats);
-            await eventRepository.Add(ev);
-            await eventRepository.SaveChanges();
+            await eventRepository.AddAsync(ev);
+            await eventRepository.SaveChangesAsync();
 
             return ev.Id;
         }

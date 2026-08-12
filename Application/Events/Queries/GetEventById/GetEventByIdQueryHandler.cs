@@ -17,7 +17,7 @@ namespace Application.Events.Queries.GetEventById
 
         public async Task<EventDto> Handle(GetEventByIdQuery request, CancellationToken cancellationToken)
         {
-            var ev = await eventRepository.GetById(request.idEvent) ?? throw new NotFoundException(nameof(Event), request.idEvent);
+            var ev = await eventRepository.GetByIdAsync(request.idEvent) ?? throw new NotFoundException(nameof(Event), request.idEvent);
 
             return new EventDto(
                 ev.Id,

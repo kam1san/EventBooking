@@ -1,12 +1,10 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces.Base;
+using Domain.Entities;
 
 namespace Application.Interfaces
 {
-    public interface IEventRepository
+    public interface IEventRepository : IBaseRepository<Event>
     {
-        Task<Event?> GetById(Guid id);
-        Task Add(Event ev);
-        Task AddBooking(Booking booking);
-        Task SaveChanges();
+        Task AddBookingAsync(Booking booking);
     }
 }

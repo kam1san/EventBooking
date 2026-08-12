@@ -15,10 +15,10 @@ namespace Application.Events.Commands.BookSeats
 
         public async Task<Guid> Handle(BookSeatsCommand request, CancellationToken cancellationToken)
         {
-            var ev = await eventRepository.GetById(request.idEvent) ?? throw new NotFoundException(nameof(Event), request.idEvent);
+            var ev = await eventRepository.GetByIdAsync(request.idEvent) ?? throw new NotFoundException(nameof(Event), request.idEvent);
             var booking = ev.BookSeats(request.userId, request.seats);
-            await eventRepository.AddBooking(booking);
-            await eventRepository.SaveChanges();
+            await eventRepository.AddBookingAsync(booking);
+            await eventRepository.SaveChangesAsync();
 
             return booking.Id;
         }
