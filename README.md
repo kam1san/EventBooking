@@ -24,10 +24,10 @@ Clean Architecture, 4 layers, dependencies point inward — toward Domain:
 - Global error handling
 - Request validation — FluentValidation as a MediatR pipeline behavior, structured per-field error responses
 - Generic base repository (`IBaseRepository<T>` / `BaseRepository<T>`)
+- JWT Authentication — register/login via ASP.NET Core Identity, Bearer tokens, write endpoints protected with `[Authorize]` while reads stay public
 
 ## Roadmap
 
-- [ ] JWT Authentication
 - [ ] Docker Compose
 - [ ] RabbitMQ
 - [ ] Tests (unit + integration)
@@ -35,12 +35,15 @@ Clean Architecture, 4 layers, dependencies point inward — toward Domain:
 
 ## API
 
-| Method | Route | Description |
-|---|---|---|
-| `GET` | `/Event` | List all events |
-| `GET` | `/Event/{id}` | Get an event |
-| `POST` | `/Event` | Create an event |
-| `POST` | `/Event/{id}/book` | Book seats |
+| Method | Route | Description | Auth |
+|---|---|---|---|
+| `POST` | `/Auth/register` | Register a new user | – |
+| `POST` | `/Auth/login` | Log in, get a JWT | – |
+| `GET` | `/Auth/me` | Get current user info | required |
+| `GET` | `/Event` | List all events | – |
+| `GET` | `/Event/{id}` | Get an event | – |
+| `POST` | `/Event` | Create an event | required |
+| `POST` | `/Event/{id}/book` | Book seats | required |
 
 ## Running locally
 
