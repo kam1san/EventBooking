@@ -27,6 +27,7 @@ project.fragment.lock.json
 # --- Local secrets / environment ---
 *.env
 .env.*
+!.env.example
 appsettings.Local.json
 appsettings.*.local.json
 secrets.json
