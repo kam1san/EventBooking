@@ -25,10 +25,10 @@ Clean Architecture, 4 layers, dependencies point inward — toward Domain:
 - Request validation — FluentValidation as a MediatR pipeline behavior, structured per-field error responses
 - Generic base repository (`IBaseRepository<T>` / `BaseRepository<T>`)
 - JWT Authentication — register/login via ASP.NET Core Identity, Bearer tokens, write endpoints protected with `[Authorize]` while reads stay public
+- Dockerized — API + PostgreSQL via a single `docker-compose up`, migrations applied automatically on startup
 
 ## Roadmap
 
-- [ ] Docker Compose
 - [ ] RabbitMQ
 - [ ] Tests (unit + integration)
 - [ ] CI/CD (GitHub Actions)
@@ -46,6 +46,19 @@ Clean Architecture, 4 layers, dependencies point inward — toward Domain:
 | `POST` | `/Event/{id}/book` | Book seats | required |
 
 ## Running locally
+
+### With Docker (recommended)
+
+```bash
+cp .env.example .env   # fill in your own values
+docker-compose up --build
+```
+
+API + PostgreSQL start together on a shared network, EF Core migrations apply automatically on startup — no manual setup needed.
+
+Swagger: `http://localhost:8080/swagger`
+
+### Without Docker
 
 ```bash
 dotnet user-secrets set "ConnectionStrings:EventBookingConnection" "Host=localhost;Port=5432;Database=eventbooking;Username=postgres;Password=<your-password>" --project API
