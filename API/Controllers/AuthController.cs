@@ -53,7 +53,7 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet("me")]
-        public async Task<IActionResult> GetCurrentUserInfo()
+        public IActionResult GetCurrentUserInfo()
         {
             var name = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var email = User.FindFirstValue(ClaimTypes.Email);
