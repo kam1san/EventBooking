@@ -5,6 +5,7 @@ using Application.Interfaces;
 using FluentValidation;
 using Infrastructure.DataAccess;
 using Infrastructure.Identity;
+using Infrastructure.Messaging;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -74,6 +75,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddScoped<IMessagePublisher, RabbitMqPublisher>();
 
 var app = builder.Build();
 

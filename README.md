@@ -4,7 +4,7 @@ Event booking platform built with Clean Architecture, DDD and CQRS (MediatR) on 
 
 ## Stack
 
-.NET 8 · ASP.NET Core Web API · PostgreSQL + EF Core · MediatR · ASP.NET Core Identity
+.NET 8 · ASP.NET Core Web API · PostgreSQL + EF Core · MediatR · ASP.NET Core Identity · RabbitMQ
 
 ## Architecture
 
@@ -14,8 +14,9 @@ Clean Architecture, 4 layers, dependencies point inward — toward Domain:
 
 - **Domain** — `Event` (aggregate root) with invariant validation, `BookSeats()` as the single entry point for creating a `Booking`.
 - **Application** — CQRS via MediatR, a separate Command/Query + Handler per use case.
-- **Infrastructure** — EF Core, repositories, PostgreSQL.
+- **Infrastructure** — EF Core, repositories, PostgreSQL, RabbitMQ publisher.
 - **API** — thin controllers, global `ExceptionMiddleware`.
+- **EventBooking.Worker** — standalone background service, consumes domain events from RabbitMQ independently of the API process.
 
 ## Implemented
 
@@ -26,10 +27,10 @@ Clean Architecture, 4 layers, dependencies point inward — toward Domain:
 - Generic base repository (`IBaseRepository<T>` / `BaseRepository<T>`)
 - JWT Authentication — register/login via ASP.NET Core Identity, Bearer tokens, write endpoints protected with `[Authorize]` while reads stay public
 - Dockerized — API + PostgreSQL via a single `docker-compose up`, migrations applied automatically on startup
+- RabbitMQ messaging — `BookSeats` publishes a `BookingCreatedDomainEvent` to a `direct` exchange after the transaction commits; a separate `EventBooking.Worker` process consumes and processes it independently, decoupled from the request/response cycle
 
 ## Roadmap
 
-- [ ] RabbitMQ
 - [ ] Tests (unit + integration)
 - [ ] CI/CD (GitHub Actions)
 
@@ -54,9 +55,10 @@ cp .env.example .env   # fill in your own values
 docker-compose up --build
 ```
 
-API + PostgreSQL start together on a shared network, EF Core migrations apply automatically on startup — no manual setup needed.
+API + PostgreSQL + RabbitMQ + the Worker consumer all start together on a shared network, EF Core migrations apply automatically on startup — no manual setup needed.
 
 Swagger: `http://localhost:8080/swagger`
+RabbitMQ management UI: `http://localhost:15672`
 
 ### Without Docker
 

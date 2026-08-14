@@ -15,6 +15,20 @@ services:
         timeout: 5s
         retries: 5
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+        RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+        RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+        - "5672:5672"
+        - "15672:15672"
+    healthcheck:
+        test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+        interval: 10s
+        timeout: 10s
+        retries: 5
+
   api:
     build:
         context: .
@@ -27,9 +41,24 @@ services:
         Jwt__Key: ${JWT_KEY}
         Jwt__Issuer: ${JWT_ISSUER}
         Jwt__Audience: ${JWT_AUDIENCE}
+        RabbitMq__Host: rabbitmq
+        RabbitMq__Username: ${RABBITMQ_USER}
+        RabbitMq__Password: ${RABBITMQ_PASSWORD}
     depends_on:
         postgres:
             condition: service_healthy
+
+  worker:
+    build:
+      context: .
+      dockerfile: EventBooking.Worker/Dockerfile
+    environment:
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: ${RABBITMQ_USER}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
 volumes:
   postgres_data:
