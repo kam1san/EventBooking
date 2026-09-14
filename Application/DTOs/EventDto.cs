@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs
+namespace Application.DTOs
 {
     public record EventDto(
         Guid Id,
@@ -6,6 +6,7 @@
         string Description,
         DateTime Date,
         int TotalSeats,
-        int AvailableSeats
+        int AvailableSeats,
+        List<BookingDto> Bookings
     );
 }

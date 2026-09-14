@@ -1,3 +1,4 @@
+using Application.Common.Mappings;
 using Application.DTOs;
 using Application.Interfaces;
 using MediatR;
@@ -16,15 +17,7 @@ namespace Application.Events.Queries.GetAllEvents
         public async Task<List<EventDto>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
         {
             var events = await eventRepository.GetAllAsync();
-
-            return events.Select(ev => new EventDto(
-                ev.Id,
-                ev.Title,
-                ev.Description,
-                ev.Date,
-                ev.TotalSeats,
-                ev.AvailableSeats
-            )).ToList();
+            return events.Select(ev => ev.ToDto()).ToList();
         }
     }
 }
