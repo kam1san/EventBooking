@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Common.Mappings;
+using Application.DTOs;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -18,15 +19,7 @@ namespace Application.Events.Queries.GetEventById
         public async Task<EventDto> Handle(GetEventByIdQuery request, CancellationToken cancellationToken)
         {
             var ev = await eventRepository.GetByIdAsync(request.idEvent) ?? throw new NotFoundException(nameof(Event), request.idEvent);
-
-            return new EventDto(
-                ev.Id,
-                ev.Title,
-                ev.Description,
-                ev.Date,
-                ev.TotalSeats,
-                ev.AvailableSeats
-            );
+            return ev.ToDto();
         }
     }
 }

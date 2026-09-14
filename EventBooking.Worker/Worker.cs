@@ -20,7 +20,28 @@ public class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var factory = new ConnectionFactory { HostName = configuration["RabbitMq:Host"]!, UserName = configuration["RabbitMq:UserName"]!, Password = configuration["RabbitMq:Password"]! };
-        await using var connection = await factory.CreateConnectionAsync();
+
+        IConnection connection = null!;
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                connection = await factory.CreateConnectionAsync(stoppingToken);
+                break;
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "RabbitMQ not reachable yet, retrying in 5s...");
+                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+            }
+        }
+
+        if (stoppingToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        await using var _ = connection;
         await using var channel = await connection.CreateChannelAsync();
 
         await channel.ExchangeDeclareAsync(exchange: "booking_events", type: ExchangeType.Direct, durable: true);
