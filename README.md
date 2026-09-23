@@ -4,7 +4,7 @@ Event booking platform built with Clean Architecture, DDD and CQRS (MediatR) on 
 
 ## Stack
 
-.NET 8 · ASP.NET Core Web API · PostgreSQL + EF Core · MediatR · ASP.NET Core Identity · RabbitMQ
+.NET 8 · ASP.NET Core Web API · PostgreSQL + EF Core · MediatR · AutoMapper · ASP.NET Core Identity · RabbitMQ
 
 ## Architecture
 
@@ -28,6 +28,7 @@ Clean Architecture, 4 layers, dependencies point inward — toward Domain:
 - JWT Authentication — register/login via ASP.NET Core Identity, Bearer tokens, write endpoints protected with `[Authorize]` while reads stay public
 - Dockerized — API + PostgreSQL via a single `docker-compose up`, migrations applied automatically on startup
 - RabbitMQ messaging — `BookSeats` publishes a `BookingCreatedDomainEvent` to a `direct` exchange after the transaction commits; a separate `EventBooking.Worker` process consumes and processes it independently, decoupled from the request/response cycle
+- AutoMapper — all Entity → DTO mapping via a single profile (incl. flattening for the "my bookings" view); public DTOs deliberately expose no `UserId`
 
 ## Roadmap
 
@@ -45,6 +46,7 @@ Clean Architecture, 4 layers, dependencies point inward — toward Domain:
 | `GET` | `/Event/{id}` | Get an event | – |
 | `POST` | `/Event` | Create an event | required |
 | `POST` | `/Event/{id}/book` | Book seats | required |
+| `GET` | `/Booking/my` | Current user's bookings | required |
 
 ## Running locally
 

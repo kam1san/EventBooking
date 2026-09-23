@@ -1,6 +1,7 @@
 using System.Text;
 using API.Middleware;
 using Application.Common.Behaviors;
+using Application.Common.Mappings;
 using Application.Interfaces;
 using FluentValidation;
 using Infrastructure.DataAccess;
@@ -76,6 +77,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IMessagePublisher, RabbitMqPublisher>();
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
 var app = builder.Build();
 
