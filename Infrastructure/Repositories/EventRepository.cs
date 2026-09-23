@@ -20,5 +20,8 @@ namespace Infrastructure.Repositories
 
         public async Task AddBookingAsync(Booking booking) =>
             await context.Bookings.AddAsync(booking);
+
+        public async Task<List<Booking>> GetBookingsByUserIdAsync(string userId) =>
+            await context.Bookings.Include(b => b.Event).Where(b => b.UserId == userId).ToListAsync();
     }
 }
